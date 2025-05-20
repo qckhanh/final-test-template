@@ -1,5 +1,7 @@
-import {Express, Response, Request, NextFunction} from 'express';
-import userRoute from "./user.route";
+import { Express, Response, Request, NextFunction } from 'express';
+import errorMiddleware from '../middleware/error.middlewares';
+import { HttpError } from '../helpers/httpsError.helpers';
+import customerRoute from './customer';
 /**
  * Apply Routes
  *
@@ -9,21 +11,19 @@ import userRoute from "./user.route";
  * @param {Express} app - The Express application instance
  */
 const applyRoutes = (app: Express) => {
-    app.use('/api/v1/user', userRoute);
-    // Add other routes here
+  app.use('/api/v1/customers', customerRoute);
+  // Add other routes here
 
-
-
-
-
-
-    //Invalid Route
-    app.use((req: Request, res: Response, next: NextFunction) => {
-        res.status(404).json({
-            error: 'Not Found',
-            message: `Route ${req.method} ${req.originalUrl} does not exist`,
-        });
-    });
+  //Invalid route
+  app.use((req: Request, res: Response, next: NextFunction) => {
+    throw new HttpError(
+      `Route ${req.method} ${req.originalUrl} does not exist`,
+      404,
+      'ROUTE_NOT_FOUND',
+    );
+  });
+  // Error handling middleware
+  app.use(errorMiddleware);
 };
 
 export default applyRoutes;
