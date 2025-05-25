@@ -10,7 +10,7 @@ export class CustomerController {
   ): Promise<void> {
     try {
       const result = await CustomerService.getAllUsers();
-      HttpResponse.sendYES(res, 200, 'All users fetched', result);
+      HttpResponse.sendYES(res, 201, 'All users fetched', result);
     } catch (err) {
       next(err);
     }

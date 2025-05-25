@@ -3,6 +3,7 @@ import { HttpError } from '../helpers/httpsError.helpers';
 
 export class CustomerService {
   static async getAllUsers(): Promise<any> {
+    console.log(Database.customers);
     return Database.customers;
   }
 
