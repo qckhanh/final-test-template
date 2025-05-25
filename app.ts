@@ -7,6 +7,7 @@ import {
   MessageRouter,
   WebSocketCore,
 } from './framework/websocket-framework';
+import { setupRpsServer } from './routes/service/rps-server';
 
 const PORT = 5001;
 const app: Express = express();
@@ -22,18 +23,20 @@ applyRoutes(app);
 
 //Websocket
 const wss = new WebSocketServer({ server });
-const core = new WebSocketCore(
-  wss,
-  MessageRouter.route.bind(MessageRouter),
-);
-MessageRouter.addType('chat', (clientId, msg, core) => {
-  core.sendToAll({
-    type: 'chat',
-    sender: clientId,
-    content: msg.content,
-    timestamp: new Date().toISOString(),
-  });
-});
+setupRpsServer(wss); // gọi logic RPS
+
+// const core = new WebSocketCore(
+//   wss,
+//   MessageRouter.route.bind(MessageRouter),
+// );
+// MessageRouter.addType('chat', (clientId, msg, core) => {
+//   core.sendToAll({
+//     type: 'chat',
+//     sender: clientId,
+//     content: msg.content,
+//     timestamp: new Date().toISOString(),
+//   });
+// });
 
 server.listen(PORT, async (): Promise<void> => {
   console.log(`✅ Server is running on http://localhost:${PORT}`);
